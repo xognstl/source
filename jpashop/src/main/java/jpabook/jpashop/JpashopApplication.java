@@ -14,7 +14,10 @@ public class JpashopApplication {
 
 	@Bean
 	Hibernate5JakartaModule hibernate5Module() {
-		return new Hibernate5JakartaModule();
+		Hibernate5JakartaModule hibernate5Module = new Hibernate5JakartaModule();
+//		hibernate5Module.configure(Hibernate5JakartaModule.Feature.FORCE_LAZY_LOADING, true);
+
+		return hibernate5Module;
 	}
 
 }
