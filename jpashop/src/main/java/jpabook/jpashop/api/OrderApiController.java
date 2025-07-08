@@ -64,6 +64,17 @@ public class OrderApiController {
         return result;
     }
 
+    // 페치 조인 사용 -> 단점 : 1:다 는 페이징 안됨
+    @GetMapping("/api/v3/orders")
+    public List<OrderDto> ordersV3() {
+        List<Order> orders = orderRepository.findAllWithItem();
+        List<OrderDto> result = orders.stream()
+                .map(o -> new OrderDto(o))
+                .collect(Collectors.toList());
+
+        return result;
+    }
+
     @Data
     static class OrderDto {
         private Long orderId;

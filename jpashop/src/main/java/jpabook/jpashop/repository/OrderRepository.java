@@ -68,6 +68,18 @@ public class OrderRepository {
         ).getResultList();
     }
 
+    public List<Order> findAllWithItem() {
+        return em.createQuery(
+                    "select distinct o from Order o" +
+                       " join fetch o.member m" +
+                       " join fetch o.delivery d" +
+                       " join fetch o.orderItems oi" +
+                       " join fetch oi.item i", Order.class)
+        .getResultList();
+    }
+    // select * from orders o join order_item oi on o.order_id = oi.order_id;
+    // 사용시 4줄 2개가 중복됨
+    // distinct 를 사용하지 않아도 중복제거 된다 => Hibernate 6버전은 페치 조인 사용 시 자동으로 중복 제거를 하도록 변경
 }
 
 
