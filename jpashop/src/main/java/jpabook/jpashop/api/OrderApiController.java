@@ -5,6 +5,7 @@ import jpabook.jpashop.repository.OrderRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -68,6 +69,23 @@ public class OrderApiController {
     @GetMapping("/api/v3/orders")
     public List<OrderDto> ordersV3() {
         List<Order> orders = orderRepository.findAllWithItem();
+        List<OrderDto> result = orders.stream()
+                .map(o -> new OrderDto(o))
+                .collect(Collectors.toList());
+
+        return result;
+    }
+
+    // v3.1 : ToOne 관계는 fetch 로 가져온다. 컬렉션은 지연로딩
+    // hibernate.default_batch_fetch_size , @BatchSize 적용(지연로딩 최적화) = 설정한 숫자만큼 미리 가져옴.
+    // where i1_0.item_id in (3,4, null, null ... ) in으로 미리 가져오는것
+    @GetMapping("/api/v3.1/orders")
+    public List<OrderDto> ordersV3_page(
+            @RequestParam(value = "offset", defaultValue = "0") int offset,
+            @RequestParam(value = "limit", defaultValue = "100") int limit
+            ) {
+        // select * from order, member, delivery 1번 + (orderItem1, item2) * N => batchSize 사용시 1+1
+        List<Order> orders = orderRepository.findAllWithMemberDelivery(offset, limit);
         List<OrderDto> result = orders.stream()
                 .map(o -> new OrderDto(o))
                 .collect(Collectors.toList());

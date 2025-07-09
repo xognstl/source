@@ -5,10 +5,12 @@ import jpabook.jpashop.domain.Category;
 import jpabook.jpashop.exception.NotEnoughStockException;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@BatchSize(size = 100) // item 은 ToOne 관계라 여기다 적어줘야함.
 @Entity
 @Getter @Setter
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)   //상속 관계의 엔티티 전략 JOINED, TABLE_PER_CLASS 있음.

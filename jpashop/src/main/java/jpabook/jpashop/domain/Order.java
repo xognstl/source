@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class Order {
     @JoinColumn(name = "member_id")
     private Member member;  // 주문 회원
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)   // cascade = CascadeType.ALL : 부모 엔티티의 작업이 자식 엔티티에 자동으로 전파
     private List<OrderItem> orderItems = new ArrayList<>();
 
