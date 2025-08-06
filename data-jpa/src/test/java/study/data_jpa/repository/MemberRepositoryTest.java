@@ -206,4 +206,28 @@ class MemberRepositoryTest {
 
     }
 
+    @Test
+    public void findMemberLazy() {
+        // given
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+        memberRepository.save(new Member("member1", 10, teamA));
+        memberRepository.save(new Member("member2", 20, teamB));
+
+        em.flush();
+        em.clear();
+
+        // when
+        List<Member> members = memberRepository.findAll();
+
+        //then
+        for (Member member : members) {
+            System.out.println("member.getTeam().getName() = " + member.getTeam().getName());   // N+1
+        }
+
+
+    }
+
 }
