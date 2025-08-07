@@ -226,8 +226,28 @@ class MemberRepositoryTest {
         for (Member member : members) {
             System.out.println("member.getTeam().getName() = " + member.getTeam().getName());   // N+1
         }
-
-
     }
 
+    @Test
+    public void queryHint() {
+        Member member1 = new Member("member1", 10);
+        memberRepository.save(member1);
+        em.flush();
+        em.clear();
+
+        Member findMember = memberRepository.findReadOnlyByUsername("member1");
+        findMember.setUsername("member2");  // hint readonly 되있으면 변경감지 안됨
+
+        em.flush(); // 변경감지 -> update
+    }
+
+    @Test
+    public void lock() {
+        Member member1 = new Member("member1", 10);
+        memberRepository.save(member1);
+        em.flush();
+        em.clear();
+
+        List<Member> result = memberRepository.findLockByUsername("member1");   // lock 있어서 자동으로 select for update 있음
+    }
 }
