@@ -250,4 +250,9 @@ class MemberRepositoryTest {
 
         List<Member> result = memberRepository.findLockByUsername("member1");   // lock 있어서 자동으로 select for update 있음
     }
+
+    @Test
+    public void callCustom() {
+        List<Member> result = memberRepository.findMemberCustom();
+    }
 }
